@@ -58,7 +58,7 @@ resource "spacelift_policy_attachment" "policy" {
 }
 
 # Native Spacelift Module Test Cases
-resource "spacelift_module_test_case" "test" {
+resource "spacelift_test_case" "test" {
   for_each = local.module_test_cases_map
 
   name          = each.value.test_name
