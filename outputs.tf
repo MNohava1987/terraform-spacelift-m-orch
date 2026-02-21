@@ -10,7 +10,7 @@ output "module_spaces" {
 
 output "rejected_manifests" {
   description = "Manifests skipped due to validation errors or repository collisions."
-  value       = local.rejected_configs
+  value       = local.rejected_manifests
 }
 
 output "webhook_subscriptions" {
