@@ -58,13 +58,6 @@ resource "spacelift_policy_attachment" "policy" {
 }
 
 # Native Spacelift Module Test Cases
-resource "spacelift_test_case" "test" {
-  for_each = local.module_test_cases_map
-
-  name          = each.value.test_name
-  module_id     = spacelift_module.this[each.value.module_name].id
-  workflow_tool = each.value.workflow_tool
-}
 
 # Webhooks are typically only needed for ADO or legacy integrations.
 # Standard GitHub App integration handles events natively.
