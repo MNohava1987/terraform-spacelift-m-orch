@@ -1,0 +1,62 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - checkout: self
+    persistCredentials: true
+
+  - task: Bash@3
+    displayName: Install Tooling
+    inputs:
+      targetType: inline
+      script: |
+        sudo apt-get update -y
+        sudo apt-get install -y unzip curl jq python3-pip
+        pip3 install --upgrade pip
+        pip3 install checkov
+        # Install tflint
+        curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+        # Install terraform-docs
+        curl -sSLo terraform-docs.tar.gz https://github.com/terraform-docs/terraform-docs/releases/download/v0.16.0/terraform-docs-v0.16.0-linux-amd64.tar.gz
+        tar -xzf terraform-docs.tar.gz
+        sudo mv terraform-docs /usr/local/bin/terraform-docs
+
+  - task: Bash@3
+    displayName: Terraform FMT
+    inputs:
+      targetType: inline
+      script: |
+        terraform fmt -check -recursive
+
+  - task: Bash@3
+    displayName: Terraform INIT & VALIDATE
+    inputs:
+      targetType: inline
+      script: |
+        terraform init -backend=false
+        terraform validate
+        terraform test
+
+  - task: Bash@3
+    displayName: TFLint
+    inputs:
+      targetType: inline
+      script: |
+        tflint --recursive
+
+  - task: Bash@3
+    displayName: Checkov Scan
+    inputs:
+      targetType: inline
+      script: |
+        checkov -d . --quiet
+
+  - task: Bash@3
+    displayName: Update Terraform Docs
+    inputs:
+      targetType: inline
+      script: |
+        terraform-docs markdown table . --output-file README.md --output-mode inject

@@ -1,0 +1,15 @@
+# Spacelift Module Configuration (MCIAC Standard)
+version: "1"
+
+module:
+  name: "m-orch"
+  terraform_provider: "spacelift"
+  # This version should match your Git tag
+  version: "1.0.0"
+
+  # Runner configuration
+  workflow_tool: "TERRAFORM_FOSS"
+  administrative: true
+  
+  # Auto-tagging is handled by ADO, but Spacelift tracks it here
+  project_root: ""
